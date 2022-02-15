@@ -1,0 +1,28 @@
+---
+# Collect SSH host keys from all hosts in the inventory
+- hosts: 'all'
+  gather_facts: false
+  any_errors_fatal: false
+  serial: 1
+
+  vars:
+    host_key_checking: false
+
+  tasks:
+    - name: "{{ inventory_hostname }} - Scan host"
+      ansible.builtin.command: "ssh-keyscan -t ed25519 {{ inventory_hostname }}"
+      register: 'ssh_keyscan_results'
+      changed_when: false
+      delegate_to: 'localhost'
+
+    - block:
+        - name: "{{ inventory_hostname }} - Check key in known_hosts"
+          ansible.builtin.known_hosts:
+            state: 'present'
+            name: "{{ inventory_hostname }}"
+            key: "{{ ssh_keyscan_results.stdout }}"
+          delegate_to: 'localhost'
+      rescue:
+        - name: "{{ inventory_hostname }} - Error collecing SSH host key"
+          debug:
+            msg: "{{ ssh_keyscan_results.stderr }}"

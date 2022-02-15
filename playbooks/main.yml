@@ -1,0 +1,61 @@
+---
+###
+# MAIN Playbooks
+###
+- name: 'Main configuration run'
+  hosts: 'all'
+  tasks:
+    - name: 'Make sure python interpreter is configured'
+      community.general.alternatives:
+        name: 'python'
+        link: '/usr/bin/python'
+        path: "{{ preferred_python_interpreter }}"
+        priority: 10
+      when: >
+        ansible_facts['os_family'] != 'RedHat' or
+        (ansible_facts['os_family'] == 'RedHat' and ansible_facts['distribution_major_version'] < '8')
+
+    - name: 'Ensure journald folder in /var/log, to prevent logging in /run'
+      file:
+        path: '/var/log/journal'
+        state: 'directory'
+        mode: '2755'
+
+#    - name: 'Run Debian roles'
+#      include_role:
+#        name: "{{ deb_role }}"
+#      loop:
+#        - 'apt'
+#      loop_control:
+#        loop_var: 'deb_role'
+#      when: ansible_facts['os_family'] == 'Debian'
+
+#    - name: 'RedHat specific roles'
+#      include_role:
+#        name: "{{ rhel_role }}"
+#      loop:
+#        - 'subscription_manager'
+#      loop_control:
+#        loop_var: 'rhel_role'
+#      when: ansible_facts['os_family'] == 'RedHat'
+
+    - name: 'Generic roles'
+      include_role:
+        name: "{{ gen_role }}"
+      loop:
+        - 'common_settings'
+      loop_control:
+        loop_var: 'gen_role'
+
+    - name: 'Prepare host specific role list'
+      merge_vars:
+        suffix_to_merge: '_roles__to_merge'
+        merged_var_name: 'host_roles'
+        expected_type: 'list'
+
+    - name: 'Host specific roles'
+      include_role:
+        name: "{{ host_role }}"
+      loop: "{{ host_roles | default([]) }}"
+      loop_control:
+        loop_var: 'host_role'

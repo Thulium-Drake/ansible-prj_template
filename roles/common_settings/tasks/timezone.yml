@@ -1,0 +1,4 @@
+---
+- name: 'Ensure timezone'
+  community.general.timezone:
+    name: 'Europe/Amsterdam'

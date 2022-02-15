@@ -1,0 +1,12 @@
+collections/*
+!collections/.do_not_remove
+!collections/requirements.yml
+roles/*
+!roles/requirements.yml
+!roles/.do_not_remove
+!roles/common_settings
+cache/*
+!cache/.do_not_remove
+.pyc
+__pycache__
+playbooks/.*.*.yml

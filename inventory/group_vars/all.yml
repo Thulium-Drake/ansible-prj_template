@@ -1,0 +1,22 @@
+---
+# Python interpreter for Ansible
+preferred_python_interpreter: '/usr/bin/python3'
+
+###
+# Common settings role
+#
+# This role is used for small snippets with configuration tasks.
+# It is controlled on 2 levels:
+#  - global, the list below, applicable to all hosts
+#  - host-specific, controlled by "_common_settings__to_merge" vars. Applicable where set
+###
+global_common_settings:
+  - 'timezone'         # Set the timezone
+  - 'root_password'    # Set the root password
+
+###
+# Root user settings
+###
+root_password: 'Secure_password!'
+root_salt: 'my_amazing_random_salt'
+root_hash_rounds: 10000
