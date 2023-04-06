@@ -7,7 +7,7 @@ roles/*
 !roles/common_settings
 cache/*
 !cache/.do_not_remove
-.pyc
+*.pyc
 __pycache__
 playbooks/.*.*.yml
-.swp
+*.swp
