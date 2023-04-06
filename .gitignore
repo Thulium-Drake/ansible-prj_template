@@ -10,3 +10,4 @@ cache/*
 .pyc
 __pycache__
 playbooks/.*.*.yml
+.swp
