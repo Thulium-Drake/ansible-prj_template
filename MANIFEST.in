@@ -1,0 +1,16 @@
+# Include all
+global-include *
+
+# Exclude dynamic or external stuff
+global-exclude *.swp *.pyc playbooks/.*.*.yml
+exclude files group_vars host_vars
+recursive-exclude .git *
+recursive-exclude cache *
+recursive-exclude collections/ansible_collections *
+recursive-exclude roles *
+
+# Re-include stuff we actually do want to sign
+recursive-include roles/common_settings *
+include cache/.do_not_remove
+include collections/.do_not_remove
+include roles/.do_not_remove
